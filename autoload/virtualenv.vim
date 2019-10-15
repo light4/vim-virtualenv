@@ -89,9 +89,7 @@ function! virtualenv#list()
 endfunction
 
 function! virtualenv#statusline()
-    if exists('g:venv_name')
-        return substitute(g:virtualenv_stl_format, '\C%n', g:venv_name, 'g')
-    elseif exists('g:virtualenv_name')
+    if exists('g:virtualenv_name')
         return substitute(g:virtualenv_stl_format, '\C%n', g:virtualenv_name, 'g')
     else
         return ''
@@ -100,8 +98,8 @@ endfunction
 
 function! virtualenv#names(prefix)
     let venvs = []
-    if exists('g:venv_name')
-        call add(venvs, fnamemodify(g:venv_name, ':t'))
+    if exists('g:venv_directory')
+        call add(venvs, fnamemodify(g:venv_directory, ':t'))
         return venvs
     endif
     for dir in split(glob(g:virtualenv_directory.'/'.a:prefix.'*'), '\n')
