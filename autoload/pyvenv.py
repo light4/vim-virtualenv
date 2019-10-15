@@ -13,8 +13,8 @@ def activate(env):
     prev_sys_path = list(sys.path)
 
     old_os_path = os.environ.get("PATH", "")
-    os.environ["PATH"] = os.path.dirname(os.path.abspath(env)) + os.pathsep + old_os_path
-    base = os.path.dirname(os.path.dirname(os.path.abspath(env)))
+    base = os.path.abspath(env)
+    os.environ["PATH"] = os.path.join(base, 'bin') + os.pathsep + old_os_path
     if sys.platform == "win32":
         site_packages = os.path.join(base, "Lib", "site-packages")
     else:
