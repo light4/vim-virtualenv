@@ -14,7 +14,9 @@ function! virtualenv#activate(...)
     let silent = a:0 > 1 ? a:2 : 0
     let env_dir = ''
     if len(name) == 0  "Figure out the name based on current file
-        if isdirectory($VIRTUAL_ENV)
+        if isdirectory(g:venv_directory)
+            let env_dir = g:venv_directory
+        elseif isdirectory($VIRTUAL_ENV)
             let name = fnamemodify($VIRTUAL_ENV, ':t')
             let env_dir = $VIRTUAL_ENV
         elseif isdirectory($PROJECT_HOME)
@@ -28,7 +30,7 @@ function! virtualenv#activate(...)
             endif
         endif
     else
-        let env_dir = g:virtualenv_directory.'/'.name
+        let env_dir = name
     endif
 
     "Couldn't figure it out, so DIE
@@ -44,11 +46,11 @@ function! virtualenv#activate(...)
 
     let s:prev_path = $PATH
 
-    if has('python')
-        python pyvenv.activate(vim.eval('l:env_dir'))
-    endif
     if has('python3')
         python3 pyvenv.activate(vim.eval('l:env_dir'))
+    endif
+    if has('python')
+        python pyvenv.activate(vim.eval('l:env_dir'))
     endif
 
     let g:virtualenv_name = name
@@ -60,11 +62,11 @@ function! virtualenv#activate(...)
 endfunction
 
 function! virtualenv#deactivate()
-    if has('python')
-        python pyvenv.deactivate()
-    endif
     if has('python3')
         python3 pyvenv.deactivate()
+    endif
+    if has('python')
+        python pyvenv.deactivate()
     endif
 
     unlet! g:virtualenv_name
@@ -87,7 +89,9 @@ function! virtualenv#list()
 endfunction
 
 function! virtualenv#statusline()
-    if exists('g:virtualenv_name')
+    if exists('g:venv_name')
+        return substitute(g:virtualenv_stl_format, '\C%n', g:venv_name, 'g')
+    elseif exists('g:virtualenv_name')
         return substitute(g:virtualenv_stl_format, '\C%n', g:virtualenv_name, 'g')
     else
         return ''
@@ -96,6 +100,10 @@ endfunction
 
 function! virtualenv#names(prefix)
     let venvs = []
+    if exists('g:venv_name')
+        call add(venvs, fnamemodify(g:venv_name, ':t'))
+        return venvs
+    endif
     for dir in split(glob(g:virtualenv_directory.'/'.a:prefix.'*'), '\n')
         if !isdirectory(dir)
             continue
