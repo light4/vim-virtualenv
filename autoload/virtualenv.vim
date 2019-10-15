@@ -15,6 +15,7 @@ function! virtualenv#activate(...)
     let env_dir = ''
     if len(name) == 0  "Figure out the name based on current file
         if isdirectory(g:venv_directory)
+            let name = g:venv_directory
             let env_dir = g:venv_directory
         elseif isdirectory($VIRTUAL_ENV)
             let name = fnamemodify($VIRTUAL_ENV, ':t')
