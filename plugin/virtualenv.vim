@@ -30,14 +30,10 @@ endif
 let g:virtualenv_directory = expand(g:virtualenv_directory)
 
 if !exists("g:venv_directory")
-    if isdirectory($PROJECT_HOME)
-        let g:venv_directory = $PROJECT_HOME.'/'.g:venv_directory
-    else
-        let g:venv_directory = $PROJECT_HOME.'/.venv'
-    endif
+    let g:venv_directory = '.venv'
 endif
 
-let g:virtualenv_directory = expand(g:virtualenv_directory)
+let g:venv_directory = expand(g:venv_directory)
 
 command! -bar VirtualEnvList :call virtualenv#list()
 command! -bar VirtualEnvDeactivate :call virtualenv#deactivate()
@@ -49,11 +45,6 @@ endfunction
 
 function! s:CompleteVirtualEnv(arg_lead, cmd_line, cursor_pos)
     return virtualenv#names(a:arg_lead)
-endfunction
-
-" DEPRECATED: Leaving in for compatibility
-function! VirtualEnvStatusline()
-    return virtualenv#statusline()
 endfunction
 
 if g:virtualenv_auto_activate == 1
