@@ -29,6 +29,16 @@ endif
 
 let g:virtualenv_directory = expand(g:virtualenv_directory)
 
+if !exists("g:venv_directory")
+    if isdirectory($PROJECT_HOME)
+        let g:venv_directory = $PROJECT_HOME.'/'.g:venv_directory
+    else
+        let g:venv_directory = $PROJECT_HOME.'/.venv'
+    endif
+endif
+
+let g:virtualenv_directory = expand(g:virtualenv_directory)
+
 command! -bar VirtualEnvList :call virtualenv#list()
 command! -bar VirtualEnvDeactivate :call virtualenv#deactivate()
 command! -bar -nargs=? -complete=customlist,s:CompleteVirtualEnv VirtualEnvActivate :call virtualenv#activate(<q-args>)
